@@ -1,34 +1,38 @@
 package arpinum.fr.hellovoteer.counter.view
 
-import android.content.Context
 import android.widget.LinearLayout
+import arpinum.fr.hellovoteer.MainActivity
 import arpinum.fr.hellovoteer.applicationStore
 import arpinum.fr.hellovoteer.counter.actions.DECREMENT
 import arpinum.fr.hellovoteer.counter.actions.INCREMENT
-import trikita.anvil.DSL.*
-import trikita.anvil.RenderableView
+import org.jetbrains.anko.AnkoComponent
+import org.jetbrains.anko.*
 
-class CounterView(c: Context) : RenderableView(c) {
+class CounterView : AnkoComponent<MainActivity> {
 
-    override fun view() {
+    override fun createView(ui: AnkoContext<MainActivity>) = with(ui) {
+
         linearLayout {
-            size(MATCH, MATCH)
-            padding(dip(8))
-            orientation(LinearLayout.VERTICAL)
-            textView {
-                size(MATCH, WRAP)
-                text("Counter ${applicationStore.state.counter}")
+            lparams(width = matchParent, height = matchParent)
+            padding = dip(8)
+            orientation = LinearLayout.VERTICAL
+            val counterValue = textView {
+                lparams(width = matchParent, height = wrapContent)
+                text = "Counter ${applicationStore.state.counter}"
             }
+            applicationStore.subscribe { (counter) -> counterValue.text = "Counter ${counter}" }
             button {
-                size(FILL, WRAP)
-                text("+")
+                lparams(width = matchParent, height = wrapContent)
+                text = "+"
                 onClick { applicationStore.dispatch(INCREMENT) }
             }
             button {
-                size(FILL, WRAP)
-                text("-")
+                lparams(width = matchParent, height = wrapContent)
+                text = "-"
                 onClick { applicationStore.dispatch(DECREMENT) }
             }
         }
     }
+
+
 }
